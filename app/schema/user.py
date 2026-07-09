@@ -15,3 +15,13 @@ class UserResponse(BaseModel): #user lai pathauna ko lagi response ma k k pathau
     email: EmailStr
     full_name: str | None = None
     created_at: datetime
+
+
+#login ko lagi schema banau vani yo class use garne ho, ani response ma k k pathaune vanera define gareko ho
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str

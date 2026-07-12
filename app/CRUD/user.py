@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from fastapi import HTTPException, status
 
-from app.schema.user import UserCreate, UserLogin #schema bata user create garna ko lagi request ma k k pathaune vanera define gareko ho
+from app.schema.user import UserCreate, UserLogin, UserUpdate#schema bata user create garna ko lagi request ma k k pathaune vanera define gareko ho
 from app.model.user import User #model bata user ko table ko structure define gareko ho
 from app.core.security import hash_password, verify_password #security.py bata hash_password function import gareko ho, jasko kaam password lai hash garne ho
 
@@ -40,3 +40,14 @@ async def authenticate_user(db: AsyncSession, username: str, password: str) -> U
     if not verify_password(password, user.hashed_password):#verify_password function is called to check if the provided password matches the hashed password stored in the database for the user. If the passwords do not match, the function returns None, indicating that authentication failed.
         return None
     return user
+
+#user update garna ko lagi
+async def update_user(db: AsyncSession, user: User, user_update: UserUpdate) -> User:
+    Update_dict = user_update.model_dump(exclude_unset=True)#model_dump() method is called on the user_update object to convert it into a dictionary. The exclude_unset=True argument ensures that only the fields that have been explicitly set in the user_update object are included in the resulting dictionary. This allows for partial updates, where only the provided fields are updated while leaving other fields unchanged.
+    for key, value in Update_dict.items():#loop through the key-value pairs in the Update_dict dictionary. For each key-value pair, the corresponding attribute of the user object is updated with the new value.
+        setattr(user, key, value)
+    db.add(user)#it tells the database session to add the updated user object to the database
+    await db.commit()#permanently save the changes made in the current transaction to the
+    await db.refresh(user)#refresh the user object with the latest data from the database, including any auto-generated fields like the primary key (id) and timestamps (created_at)
+    return user
+                      

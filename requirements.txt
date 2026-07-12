@@ -39,3 +39,5 @@ pylint==3.0.3
 # Development Tools
 ipython==8.18.1
 python-dotenv[cli]==1.0.0
+
+pwdlib==0.3.0

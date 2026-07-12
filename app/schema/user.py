@@ -25,3 +25,10 @@ class UserLogin(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
+
+#update garna ko lagi schema banau vani yo class use garne ho, ani response ma k k pathaune vanera define gareko ho
+class UserUpdate(BaseModel):
+    username: str | None = None
+    email: EmailStr | None = None
+    password: str | None = None
+    full_name: str | None = None

@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException#APIRouter is imported from
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.security import OAuth2PasswordRequestForm#OAuth2PasswordRequestForm is imported from FastAPI to handle the form data for user login requests, which includes the username and password fields.
 
-from app.schema.user import TokenResponse, UserCreate, UserResponse, UserLogin#schema bata user create garna ko lagi request ma k k pathaune vanera define gareko ho, ani response ma k k pathaune vanera define gareko ho
-from app.CRUD.user import create_user, authenticate_user#CRUD bata create_user function import gareko ho, jasko kaam user lai database ma create garne ho
+from app.schema.user import TokenResponse, UserCreate, UserResponse, UserLogin, UserUpdate#schema bata user create garna ko lagi request ma k k pathaune vanera define gareko ho, ani response ma k k pathaune vanera define gareko ho
+from app.CRUD.user import create_user, authenticate_user, update_user#CRUD bata create_user function import gareko ho, jasko kaam user lai database ma create garne ho
 from app.dependency import get_db, get_current_user#dependency.py bata get_db function import gareko ho, jasko kaam database session provide garne ho
 from app.core.security import create_access_token#security.py bata create_access_token function import gareko ho, jasko kaam JWT access token create garne ho
 
@@ -27,3 +27,9 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Async
 @router.get("/me", response_model=UserResponse)
 async def get_current_user_details(current_user: UserResponse = Depends(get_current_user)):#get_current_user_details function is defined to retrieve the current user's details based on the provided JWT token. It takes a UserResponse object as input, which is obtained from the get_current_user dependency that validates the token and retrieves the corresponding user from the database.
     return current_user
+
+#create a new endpoint to update the current user's details based on the provided JWT token. It accepts a PUT request at the "/me" path and expects a UserUpdate object in the request body. The response will be a UserResponse object containing the updated user's details.
+@router.put("/me", response_model=UserResponse)
+async def update_current_user_details(user_update: UserUpdate, current_user: UserResponse = Depends(get_current_user), db: AsyncSession = Depends(get_db)):#update_current_user_details function is defined to handle the user update process. It takes a UserUpdate object as input, which contains the user's updated details, a UserResponse object representing the current user obtained from the get_current_user dependency, and an asynchronous database session (db) provided by the get_db dependency.
+    updated_user = await update_user(db, current_user, user_update)#database session (db), current user details (current_user), and updated user details (user_update) are passed to the update_user function, which handles the actual update of the user's information in the database. The result is stored in the updated_user variable.
+    return updated_user

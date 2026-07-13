@@ -1,8 +1,8 @@
-"""create task table
+"""update updated_at default
 
-Revision ID: cff886fa0a24
+Revision ID: bff8a9097ee1
 Revises: 
-Create Date: 2026-07-12 17:31:44.911791
+Create Date: 2026-07-13 13:55:05.847563
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'cff886fa0a24'
+revision: str = 'bff8a9097ee1'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -37,7 +37,7 @@ def upgrade() -> None:
     sa.Column('title', sa.String(length=100), nullable=False),
     sa.Column('description', sa.String(length=255), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
-    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('status', sa.String(length=20), nullable=False),
     sa.Column('owner_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),

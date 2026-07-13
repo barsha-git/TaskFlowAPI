@@ -14,4 +14,4 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     full_name: Mapped[str] = mapped_column(String(100), nullable=True)
-    owner: Mapped["Task"] = relationship("Task", back_populates="owner")  # Relationship to the Task model, allowing access to the tasks owned by the user
+    tasks: Mapped[list["Task"]] = relationship("Task", back_populates="owner")  # Relationship to the Task model, allowing access to the tasks owned by the user
